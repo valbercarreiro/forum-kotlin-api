@@ -3,6 +3,7 @@ package br.com.alura.forum.service
 import br.com.alura.forum.dto.AlterarTopicoDTO
 import br.com.alura.forum.dto.TopicoDTO
 import br.com.alura.forum.dto.TopicoResponse
+import br.com.alura.forum.exception.NotFoundException
 import br.com.alura.forum.mapper.Mapper
 import br.com.alura.forum.mapper.TopicoDTOMapper
 import br.com.alura.forum.mapper.TopicoResponseMapper
@@ -15,7 +16,8 @@ import kotlin.collections.ArrayList
 class TopicoService(
                     private var topicos: List<Topico> = ArrayList(),
                     private val topicoResponseMapper: TopicoResponseMapper,
-                    private val topicoDTOMapper: TopicoDTOMapper
+                    private val topicoDTOMapper: TopicoDTOMapper,
+                    private val notFoundMessage: String = "Tópico não encontrado!"
                     ) {
 
     fun listar(): List<TopicoResponse> {
@@ -27,7 +29,7 @@ class TopicoService(
     fun buscarPorId(id: Long): TopicoResponse {
         val topico = topicos.stream().filter { t ->
             t.id == id
-        }.findFirst().get()
+        }.findFirst().orElseThrow { NotFoundException(notFoundMessage) }
 
         return topicoResponseMapper.map(topico)
     }
@@ -43,7 +45,7 @@ class TopicoService(
     fun alterar(id: Long, dto: AlterarTopicoDTO): TopicoResponse {
         val topico = topicos.stream().filter { t ->
             t.id == id
-        }.findFirst().get()
+        }.findFirst().orElseThrow { NotFoundException(notFoundMessage) }
 
         val topicoAlterado = Topico(
                             id = id,
@@ -64,7 +66,7 @@ class TopicoService(
     fun deletar(id: Long) {
         val topico = topicos.stream().filter { t ->
             t.id == id
-        }.findFirst().get()
+        }.findFirst().orElseThrow { NotFoundException(notFoundMessage) }
 
         topicos = topicos.minus(topico)
     }
