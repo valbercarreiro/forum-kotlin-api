@@ -7,6 +7,8 @@ import br.com.alura.forum.model.Curso
 import br.com.alura.forum.model.Topico
 import br.com.alura.forum.model.Usuario
 import br.com.alura.forum.service.TopicoService
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -24,6 +26,7 @@ import javax.validation.Valid
 class TopicoController(private val service: TopicoService) {
 
     @GetMapping
+    @Cacheable("listaDeTopicos")
     fun listar(
             @RequestParam(required = false) nomeCurso: String?,
             @PageableDefault(size = 5, sort = ["data_criacao"], direction = Sort.Direction.DESC) paginacao: Pageable
@@ -38,6 +41,7 @@ class TopicoController(private val service: TopicoService) {
 
     @PostMapping
     @Transactional
+    @CacheEvict(value=["listaDeTopicos"], allEntries = true)
     fun cadastrar(@RequestBody @Valid dto: TopicoDTO,
                     uriBuilder: UriComponentsBuilder): ResponseEntity<TopicoResponse> {
         val topicoResponse = service.cadastrar(dto)
@@ -47,6 +51,7 @@ class TopicoController(private val service: TopicoService) {
 
     @PutMapping("/{id}")
     @Transactional
+    @CacheEvict(value=["listaDeTopicos"], allEntries = true)
     fun alterar(@PathVariable id: Long,
                 @RequestBody @Valid dto: AlterarTopicoDTO): ResponseEntity<TopicoResponse> {
         val topicoResponse = service.alterar(id, dto)
@@ -56,6 +61,7 @@ class TopicoController(private val service: TopicoService) {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
+    @CacheEvict(value=["listaDeTopicos"], allEntries = true)
     fun deletar(@PathVariable id: Long) {
         service.deletar(id)
     }
