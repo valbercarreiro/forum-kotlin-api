@@ -2,6 +2,7 @@ package br.com.alura.forum.service
 
 import br.com.alura.forum.dto.AlterarTopicoDTO
 import br.com.alura.forum.dto.TopicoDTO
+import br.com.alura.forum.dto.TopicoPorCategoriaDTO
 import br.com.alura.forum.dto.TopicoResponse
 import br.com.alura.forum.exception.NotFoundException
 import br.com.alura.forum.mapper.TopicoDTOMapper
@@ -55,10 +56,14 @@ class TopicoService(
         topico.mensagem = dto.mensagem
         repository.save(topico)
 
-        return return topicoResponseMapper.map(topico)
+        return topicoResponseMapper.map(topico)
     }
 
     fun deletar(id: Long) {
         repository.deleteById(id)
+    }
+
+    fun relatorio(): List<TopicoPorCategoriaDTO> {
+        return repository.relatorio()
     }
 }

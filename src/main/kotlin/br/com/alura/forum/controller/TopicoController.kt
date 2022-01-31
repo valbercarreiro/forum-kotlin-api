@@ -2,6 +2,7 @@ package br.com.alura.forum.controller
 
 import br.com.alura.forum.dto.AlterarTopicoDTO
 import br.com.alura.forum.dto.TopicoDTO
+import br.com.alura.forum.dto.TopicoPorCategoriaDTO
 import br.com.alura.forum.dto.TopicoResponse
 import br.com.alura.forum.model.Curso
 import br.com.alura.forum.model.Topico
@@ -64,5 +65,10 @@ class TopicoController(private val service: TopicoService) {
     @CacheEvict(value=["listaDeTopicos"], allEntries = true)
     fun deletar(@PathVariable id: Long) {
         service.deletar(id)
+    }
+
+    @GetMapping("/relatorio")
+    fun relatorio(): List<TopicoPorCategoriaDTO> {
+        return service.relatorio()
     }
 }
