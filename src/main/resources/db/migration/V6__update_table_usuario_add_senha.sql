@@ -1,0 +1,1 @@
+UPDATE usuario SET senha = '123456' WHERE id = 1
