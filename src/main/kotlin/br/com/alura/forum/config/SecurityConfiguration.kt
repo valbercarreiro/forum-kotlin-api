@@ -24,14 +24,15 @@ class SecurityConfiguration(
 
     override fun configure(http: HttpSecurity?) {
         http?.
+            csrf()?.disable()?.
             authorizeHttpRequests()?.
             antMatchers(HttpMethod.POST,"/login")?.permitAll()?.
-            //antMatchers("/topicos")?.hasAuthority("LEITURA_ESCRITA")?.
+            antMatchers("/topicos")?.hasAuthority("LEITURA_ESCRITA")?.
             anyRequest()?.
             authenticated()?.
             and()
             http?.addFilterBefore(JWTLoginFilter(authManager = authenticationManager(), jwtUtil = jwtUtil), UsernamePasswordAuthenticationFilter().javaClass)
-            http?.addFilterBefore(JWTAuthenticatonFilter(jwtUtil = jwtUtil), OncePerRequestFilter::class.java)
+            http?.addFilterBefore(JWTAuthenticatonFilter(jwtUtil = jwtUtil), UsernamePasswordAuthenticationFilter().javaClass)
             http?.sessionManagement()?.
             sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }
