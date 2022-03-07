@@ -1,0 +1,8 @@
+target/
+*.class
+*.jar
+*.warq
+*.ear
+*.logs
+*.iml
+.idea/
